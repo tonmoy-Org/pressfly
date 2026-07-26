@@ -616,7 +616,7 @@ function get_user_statuses($id = null)
     ];
 
     if (!is_null($id)) {
-        return $statuses[$id] ?? $id;
+        return $statuses[$id] ?? ($id == 0 ? __('Inactive') : $id);
     }
 
     return $statuses;

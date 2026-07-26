@@ -18,7 +18,7 @@ return array (
   'LOG_DEPRECATIONS_CHANNEL' => NULL,
   'LOG_LEVEL' => 'debug',
   'DB_CONNECTION' => 'mysql',
-  'DB_HOST' => 'localhost',
+  'DB_HOST' => '127.0.0.1',
   'DB_PORT' => '3306',
   'DB_DATABASE' => 'monetizearticle',
   'DB_USERNAME' => 'root',

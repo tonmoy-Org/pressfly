@@ -600,7 +600,7 @@ function get_withdraw_statuses($id = null)
         4 => __('Cancelled'),
     ];
 
-    if ($id) {
+    if (!is_null($id)) {
         return $statuses[$id] ?? $id;
     }
 
@@ -615,7 +615,7 @@ function get_user_statuses($id = null)
         3 => __('Inactive'),
     ];
 
-    if ($id) {
+    if (!is_null($id)) {
         return $statuses[$id] ?? $id;
     }
 

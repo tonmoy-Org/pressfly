@@ -1,0 +1,11 @@
+/private/storage/framework/cache/data/*
+/private/storage/framework/sessions/*
+/private/storage/framework/views/*
+/private/storage/logs/*
+/private/env.php
+/private/env_local.php
+/node_modules/
+.DS_Store
+.idea/
+.vscode/
+

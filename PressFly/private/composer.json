@@ -1,0 +1,12 @@
+{
+    "name": "mightyscripts/pressfly",
+    "description": "PressFly - Monetized Social Sharing Platform",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    }
+}

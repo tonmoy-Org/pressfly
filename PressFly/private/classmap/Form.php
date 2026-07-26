@@ -106,8 +106,7 @@ final class Form
         $options = (array)$options;
 
         if (isset($attributes['placeholder'])) {
-            //$options = ['' => $attributes['placeholder'], ...$options];
-            $options = \array_merge(['' => $attributes['placeholder']], $options);
+            $options = ['' => $attributes['placeholder']] + $options;
 
             unset($attributes['placeholder']);
         }

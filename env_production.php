@@ -1,11 +1,11 @@
 <?php
 
 return array (
-  'APP_INSTALLED' => 0,
+  'APP_INSTALLED' => 1,
   'APP_NAME' => 'PressFly',
   'APP_ENV' => 'production',
-  'APP_KEY' => 'ZzTdxME6P4lLAaGc8IdvUOoSkLYdVZk0',
-  'APP_SECRET_KEY' => '32a529ccae6a333f0af3eb99e9cfbf6030425b0c',
+  'APP_KEY' => '4Bux48D5iMtbRqduDCmKXUqIOMlyBQuh',
+  'APP_SECRET_KEY' => 'e6a54adf8c8f46e2d62fbceb9c26c9b5ef5dfddc',
   'APP_DEBUG' => false,
   'APP_URL' => 'https://monetizearticle.com',
   'APP_LOCALE' => 'en',
@@ -18,7 +18,7 @@ return array (
   'LOG_DEPRECATIONS_CHANNEL' => NULL,
   'LOG_LEVEL' => 'debug',
   'DB_CONNECTION' => 'mysql',
-  'DB_HOST' => '127.0.0.1',
+  'DB_HOST' => 'localhost',
   'DB_PORT' => '3306',
   'DB_DATABASE' => 'monetizearticle',
   'DB_USERNAME' => 'root',

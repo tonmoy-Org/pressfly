@@ -33,6 +33,14 @@ body {
     text-decoration: none;
 }
 
+.auth-title img {
+    max-width: 100%;
+    height: auto;
+    max-height: 100px;
+    object-fit: contain;
+    display: inline-block;
+}
+
 .auth-content {
     background: #fff;
     padding: 15px;

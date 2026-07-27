@@ -158,6 +158,14 @@ img {
     text-decoration: none;
 }
 
+.header .logo a img,
+.navbar-brand img {
+    max-width: 100%;
+    height: auto;
+    max-height: 80px;
+    object-fit: contain;
+}
+
 .header .top-banner .ad-element {
     justify-content: end;
     margin-bottom: 0;

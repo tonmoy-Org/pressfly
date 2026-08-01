@@ -244,6 +244,8 @@ function get_ip()
     if (!isset($ip)) {
         if (!empty($_SERVER["HTTP_CF_CONNECTING_IP"])) {
             $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        } elseif (!empty($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+            $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
         } elseif (!empty($_SERVER["HTTP_FASTLY_CLIENT_IP"])) {
             $ip = $_SERVER["HTTP_FASTLY_CLIENT_IP"];
         } elseif (!empty($_SERVER["HTTP_CLIENT_IP"])) {

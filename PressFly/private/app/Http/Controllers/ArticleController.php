@@ -251,7 +251,7 @@ class ArticleController extends Controller
         $diff_seconds = (time() - $t);
         $read_time = (int)$article->read_time;
 
-        if ($diff_seconds < $read_time) {
+        if ($diff_seconds < ($read_time - 2)) {
             $this->addNormalStatisticEntry($article, $data, get_ip(), 2);
             $content = [
                 'status' => 'error',

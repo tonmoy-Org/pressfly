@@ -105,7 +105,7 @@
                 </a>
             </div>
             <div class="top-banner">
-                <?= applyShortCodes('[ads id="' . get_style('header_ad') . '"]') ?>
+                <?= \App\Helpers\Elements::ads(['id' => get_style('header_ad')]) ?>
             </div>
         </div>
     </div>

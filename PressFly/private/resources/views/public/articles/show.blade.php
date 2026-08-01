@@ -129,13 +129,13 @@
                         @include('public._partials.share_modal', ['article' => $article])
                     </div>
 
-                    <?= applyShortCodes('[ads id="' . get_style('above_article_ad') . '"]') ?>
+                    <?= \App\Helpers\Elements::ads(['id' => get_style('above_article_ad')]) ?>
 
                     <div id="main-content" class="article-content dont-break-out">
                         {!! $article->getFinalContent() !!}
                     </div>
 
-                    <?= applyShortCodes('[ads id="' . get_style('below_article_ad') . '"]') ?>
+                    <?= \App\Helpers\Elements::ads(['id' => get_style('below_article_ad')]) ?>
 
                     <script>
                         /* <![CDATA[ */

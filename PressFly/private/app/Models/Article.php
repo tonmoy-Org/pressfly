@@ -293,7 +293,7 @@ class Article extends Model
                 if ($p > 0 && $code > 0) {
                     $ads[] = [
                         'p' => $p,
-                        'code' => \applyShortCodes('[ads id="' . $code . '"]'),
+                        'code' => \App\Helpers\Elements::ads(['id' => $code]),
                     ];
                 }
             }

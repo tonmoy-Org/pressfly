@@ -23,6 +23,9 @@ class Statistic extends Model
 
     public static function get_country($ip)
     {
+        if (in_array($ip, ['127.0.0.1', '::1'])) {
+            return 'US'; // Return US for local testing
+        }
         if (!empty($_SERVER["HTTP_CF_IPCOUNTRY"])) {
             if (!in_array($_SERVER["HTTP_CF_IPCOUNTRY"], ['XX', 'T1'])) {
                 return $_SERVER["HTTP_CF_IPCOUNTRY"];

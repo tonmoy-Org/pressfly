@@ -233,7 +233,7 @@ class ArticleController extends Controller
         /**
          * Check for Adblock
          */
-        if (!isset($_COOKIE['ab']) || in_array($_COOKIE['ab'], [0, 1])) {
+        if (!isset($_COOKIE['ab']) || $_COOKIE['ab'] == 1) {
             $this->addNormalStatisticEntry($article, $data, get_ip(), 10);
             $content = [
                 'status' => 'success',

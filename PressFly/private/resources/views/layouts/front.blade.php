@@ -221,7 +221,7 @@
 <script src="https://fastly.jsdelivr.net/gh/ppowalowski/stickUp2@2.3.2/build/js/stickUp.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/blazy@1.8.2/blazy.min.js"></script>
 
-<script src="{{ asset('assets/js/app.js?v=' . APP_VERSION) }}"></script>
+<script src="{{ asset('assets/js/app.js?v=' . APP_VERSION . '&t=' . time()) }}"></script>
 
 {!! get_option('frontend_footer_code') !!}
 

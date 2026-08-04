@@ -443,7 +443,7 @@ $(window).on('load.checkAdblockers', function (e) {
     }, 1000);
 });
 
-$(document).on('DOMContentLoaded.counter', function (e) {
+$(document).ready(function (e) {
     window.setTimeout(function () {
         if (typeof read_time !== 'undefined') {
             var time = read_time * 1000,

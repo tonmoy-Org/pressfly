@@ -173,7 +173,7 @@ class Captcha
     {
         $secretKey = get_option('recaptcha_v3_secret_key');
 
-        if (is_null($post_data['g-recaptcha-response'])) {
+        if (empty($post_data['g-recaptcha-response'])) {
             return [
                 'status' => false,
                 'message' => 'Missing g-recaptcha-response',

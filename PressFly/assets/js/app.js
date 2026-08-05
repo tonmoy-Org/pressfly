@@ -481,21 +481,25 @@ $(document).ready(function (e) {
 });
 
 function recaptchav3_run() {
-    // https://stackoverflow.com/a/50749773/1794834
-    // https://developers.google.com/recaptcha/docs/v3
-    grecaptcha.ready(function () {
-        // do request for recaptcha token
-        // response is promise with passed token
-        grecaptcha.execute(CaptchaArticleScore, {action: 'articleShow'}).then(function (token) {
-            // add token to form
-            var show_form = $('#view-form.view-form');
-
-            show_form.prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
-            show_form.prepend('<input type="hidden" name="g-recaptcha-action" value="articleShow">');
-
-            show_form.submit();
-        });
-    });
+    try {
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {
+            grecaptcha.ready(function () {
+                var siteKey = app_vars.recaptcha_v3_site_key;
+                grecaptcha.execute(siteKey, {action: 'articleShow'}).then(function (token) {
+                    var show_form = $('#view-form.view-form');
+                    show_form.prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+                    show_form.prepend('<input type="hidden" name="g-recaptcha-action" value="articleShow">');
+                    show_form.submit();
+                }).catch(function (err) {
+                    $('#view-form.view-form').submit();
+                });
+            });
+        } else {
+            $('#view-form.view-form').submit();
+        }
+    } catch (e) {
+        $('#view-form.view-form').submit();
+    }
 }
 
 /**

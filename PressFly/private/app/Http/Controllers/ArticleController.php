@@ -169,7 +169,7 @@ class ArticleController extends Controller
          * Check if old article
          */
         if ((int)get_option('paid_days', 0) !== 0) {
-            if ($article->published_at->addDays(get_option('paid_days', 0))->isPast()) {
+            if ($article->published_at->addDays((int)get_option('paid_days', 0))->isPast()) {
                 $this->addNormalStatisticEntry($article, $data, get_ip(), 15);
                 $content = [
                     'status' => 'success',

@@ -111,7 +111,6 @@ class GenerateDummyData extends Command
             $withdraw->method = 'PayPal';
             $withdraw->account = 'tutulnaj@gmail.com';
             $withdraw->created_at = $date;
-            $withdraw->updated_at = $date->copy()->addDays(rand(1, 3));
             $withdraw->save();
         }
 

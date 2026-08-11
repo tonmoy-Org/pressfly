@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Ad;
 use App\Models\Menu;
 use App\Models\Option;
+use App\Models\User;
+use App\Helpers\SmsGateway;
+use Illuminate\Http\Request;
 use App\Models\Page;
 use App\Models\Sidebar;
 use Illuminate\Contracts\View\View;
@@ -184,5 +187,21 @@ class OptionController extends AdminController
                 'prices' => $prices,
             ]
         );
+    }
+
+    public function testSms(Request $request)
+    {
+        $mobile = $request->input('mobile');
+        
+        if ($mobile) {
+            try {
+                $response = SmsGateway::send($mobile, "This is a test SMS from PressFly.");
+                return redirect()->route('admin.options.index', ['#sms'])->with('success', __('Test SMS sent successfully. Response: ') . json_encode($response));
+            } catch (\Exception $e) {
+                return redirect()->route('admin.options.index', ['#sms'])->with('error', __('Failed to send Test SMS. Error: ') . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.options.index', ['#sms'])->with('error', __('Mobile number is required.'));
     }
 }

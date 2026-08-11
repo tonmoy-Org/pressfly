@@ -201,6 +201,7 @@ Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(functi
     Route::resource('admin-groups', Admin\AdminGroupController::class)->except(['show']);
 
     Route::match(['get', 'post'], '/options', [Admin\OptionController::class, 'index'])->name('options.index');
+    Route::post('/options/test-sms', [Admin\OptionController::class, 'testSms'])->name('options.testSms');
     Route::match(['get', 'post'], '/options/style', [Admin\OptionController::class, 'style'])->name('options.style');
     Route::match(['get', 'post'], '/payout-rates', [Admin\OptionController::class, 'prices'])->name('prices');
     Route::get('/options/system', fn() => view('admin.options.system'))->name('options.system');

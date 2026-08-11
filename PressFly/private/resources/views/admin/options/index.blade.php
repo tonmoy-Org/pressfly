@@ -1328,6 +1328,23 @@
 
     </form>
 
+    <hr>
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><?= __('Send Test SMS') ?></h3>
+        </div>
+        <div class="box-body">
+            <form method="POST" action="{{ route('admin.options.testSms') }}" class="form-inline">
+                @csrf
+                <div class="form-group">
+                    <input type="tel" name="mobile" class="form-control" placeholder="{{ __('Enter Mobile Number') }}" required>
+                </div>
+                <button type="submit" class="btn btn-success ml-2">{{ __('Send Test SMS') }}</button>
+            </form>
+        </div>
+    </div>
+
 @endsection
 
 @push('footer')

@@ -55,30 +55,41 @@ class GenerateDummyData extends Command
         $daysToGenerate = rand(150, 200);
         $now = Carbon::now();
 
-        $currentViews = Statistic::where('user_id', $user->id)->sum('views');
+        $currentViews = Statistic::where('user_id', $user->id)->count();
         if ($currentViews < $totalTargetViews) {
             $viewsToAdd = $totalTargetViews - $currentViews;
-            $avgViewsPerDay = (int)($viewsToAdd / $daysToGenerate);
             
-            for ($i = 1; $i <= $daysToGenerate; $i++) {
-                $date = $now->copy()->subDays($i);
-                $dailyViews = $avgViewsPerDay + rand(-($avgViewsPerDay/4), ($avgViewsPerDay/4));
-                $dailyEarnings = ($dailyViews / 1000) * $cpm;
+            $this->info("Inserting $viewsToAdd views into statistics table...");
 
-                $stat = Statistic::firstOrNew([
-                    'user_id' => $user->id,
-                    'year' => $date->year,
-                    'month' => $date->month,
-                    'day' => $date->day
-                ]);
+            $batch = [];
+            $batchSize = 2000;
+            
+            for ($i = 1; $i <= $viewsToAdd; $i++) {
+                $date = $now->copy()->subDays(rand(1, $daysToGenerate))->subMinutes(rand(1, 1440));
                 
-                $stat->views += $dailyViews;
-                $stat->publisher_earn += $dailyEarnings;
-                $stat->save();
+                $batch[] = [
+                    'user_id' => $user->id,
+                    'article_id' => null,
+                    'author_earn' => $cpm / 1000,
+                    'reason' => 1,
+                    'ip' => rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255),
+                    'country' => 'US',
+                    'created_at' => $date
+                ];
+                
+                if (count($batch) >= $batchSize) {
+                    \Illuminate\Support\Facades\DB::table('statistics')->insert($batch);
+                    $batch = [];
+                    $this->info("Inserted $i / $viewsToAdd");
+                }
+            }
+            
+            if (count($batch) > 0) {
+                \Illuminate\Support\Facades\DB::table('statistics')->insert($batch);
             }
         }
 
-        $totalEarnings = Statistic::where('user_id', $user->id)->sum('publisher_earn');
+        $totalEarnings = Statistic::where('user_id', $user->id)->sum('author_earn');
         $user->publisher_earnings = $totalEarnings;
         $user->save();
 

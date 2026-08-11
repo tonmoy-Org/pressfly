@@ -367,7 +367,7 @@ class AuthController extends Controller
 
                 if (get_option('sms_verification_enabled', '0') == '1') {
                     try {
-                        $smsBody = "Hi @{$user->username} ,\nPressFly Verification\nYour code is {$user->sms_code}. Do not share it.";
+                        $smsBody = "Dear,\n@{$user->username}\n\nPressFly Verification \nCode: {$user->sms_code}\n\nDo not share it.";
                         \App\Helpers\SmsGateway::send($user->mobile, $smsBody);
                     } catch (\Exception $exception) {
                         \Log::error($exception->getMessage());
@@ -486,7 +486,7 @@ class AuthController extends Controller
             $user->save();
 
             try {
-                $smsBody = "Hi @{$user->username} ,\nPressFly Verification\nYour code is {$user->sms_code}. Do not share it.";
+                $smsBody = "Dear,\n@{$user->username}\n\nPressFly Verification \nCode: {$user->sms_code}\n\nDo not share it.";
                 \App\Helpers\SmsGateway::send($user->mobile, $smsBody);
                 session()->flash('success', __('Verification code resent successfully.'));
             } catch (\Exception $exception) {

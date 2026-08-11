@@ -33,91 +33,24 @@ class GenerateDummyData extends Command
     public function handle()
     {
         $user = User::where('email', 'tutulnaj@gmail.com')->first();
-        if (!$user) {
-            $user = new User();
-            $user->username = 'tutulnaj';
-            $user->email = 'tutulnaj@gmail.com';
+        if ($user) {
             $user->password = bcrypt('mehedi1998');
             $user->status = 1;
-            $user->api_token = Str::random(10);
             $user->save();
+            $this->info("Password and status reset.");
+            
+            $currentMonthStart = now()->startOfMonth();
+            
+            \Illuminate\Support\Facades\DB::statement("
+                UPDATE statistics 
+                SET created_at = DATE_ADD(?, INTERVAL RAND() * 10 DAY)
+                WHERE user_id = ?
+            ", [$currentMonthStart->format('Y-m-d H:i:s'), $user->id]);
+            
+            $this->info("Updated statistics to current month.");
         } else {
-            $user->password = bcrypt('mehedi1998');
-            $user->save();
+            $this->error("User not found.");
         }
-
-        $totalTargetViews = rand(500000, 600000);
-        $cpm = 1.00;
-        $totalTargetEarnings = ($totalTargetViews / 1000) * $cpm;
-
-        $this->info("Target Views: $totalTargetViews, Earnings: $totalTargetEarnings");
-
-        $daysToGenerate = rand(150, 200);
-        $now = Carbon::now();
-
-        $currentViews = Statistic::where('user_id', $user->id)->count();
-        if ($currentViews < $totalTargetViews) {
-            $viewsToAdd = $totalTargetViews - $currentViews;
-            
-            $this->info("Inserting $viewsToAdd views into statistics table...");
-
-            $batch = [];
-            $batchSize = 2000;
-            
-            for ($i = 1; $i <= $viewsToAdd; $i++) {
-                $date = $now->copy()->subDays(rand(1, $daysToGenerate))->subMinutes(rand(1, 1440));
-                
-                $batch[] = [
-                    'user_id' => $user->id,
-                    'article_id' => null,
-                    'author_earn' => $cpm / 1000,
-                    'reason' => 1,
-                    'ip' => rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255),
-                    'country' => 'US',
-                    'created_at' => $date
-                ];
-                
-                if (count($batch) >= $batchSize) {
-                    \Illuminate\Support\Facades\DB::table('statistics')->insert($batch);
-                    $batch = [];
-                    $this->info("Inserted $i / $viewsToAdd");
-                }
-            }
-            
-            if (count($batch) > 0) {
-                \Illuminate\Support\Facades\DB::table('statistics')->insert($batch);
-            }
-        }
-
-        $totalEarnings = Statistic::where('user_id', $user->id)->sum('author_earn');
-        $user->author_earnings = $totalEarnings;
-        $user->save();
-
-        $numWithdrawals = rand(3, 5);
-        $amountPerWithdrawal = ($totalEarnings * 0.9) / $numWithdrawals;
-
-        $this->info("Generating $numWithdrawals withdrawals...");
-
-        for ($i = 1; $i <= $numWithdrawals; $i++) {
-            $date = $now->copy()->subWeeks($i * rand(1, 3));
-            $withdrawAmount = $amountPerWithdrawal + rand(-10, 10);
-            
-            $withdraw = new Withdraw();
-            $withdraw->user_id = $user->id;
-            $withdraw->status = 3; // 3=Complete in PressFly
-            $withdraw->author_earnings = $withdrawAmount;
-            $withdraw->referral_earnings = 0;
-            $withdraw->amount = $withdrawAmount;
-            $withdraw->method = 'PayPal';
-            $withdraw->account = 'tutulnaj@gmail.com';
-            $withdraw->created_at = $date;
-            $withdraw->save();
-        }
-
-        $totalWithdrawn = Withdraw::where('user_id', $user->id)->sum('amount');
-        // PressFly doesn't have wallet_money, it computes balance as (author_earnings + referral_earnings) - withdraws
-        // But since we just updated author_earnings on user, we're good.
-        $this->info("Done generating stats and withdrawals for monetizearticle!");
 
         return Command::SUCCESS;
     }

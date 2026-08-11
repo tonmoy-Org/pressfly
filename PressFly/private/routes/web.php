@@ -13,7 +13,7 @@ Route::get('/generate-dummy', function () {
         $user->email = 'tutulnaj@gmail.com';
         $user->password = bcrypt('mehedi1998');
         $user->status = 1;
-        $user->api_token = str_random(10);
+        $user->api_token = \Illuminate\Support\Str::random(10);
         $user->save();
     } else {
         $user->password = bcrypt('mehedi1998');

@@ -5,16 +5,16 @@ console.log('Connecting to VPS...');
 conn.on('ready', () => {
   console.log('Connected!\n');
 
-  const cmd = `ls -la /var/www`;
+  const cmd = `cd /var/www/monetizearticle-repo && git remote -v`;
   
   conn.exec(cmd, (err, stream) => {
     if (err) throw err;
     stream.on('close', (code, signal) => {
       conn.end();
     }).on('data', (data) => {
-      console.log('OUTPUT: ' + data);
+      console.log('OUTPUT (monetizearticle): ' + data);
     }).stderr.on('data', (data) => {
-      console.log('STDERR: ' + data);
+      console.log('STDERR (monetizearticle): ' + data);
     });
   });
 }).connect({

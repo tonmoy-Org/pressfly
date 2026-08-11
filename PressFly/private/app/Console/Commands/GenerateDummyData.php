@@ -34,20 +34,23 @@ class GenerateDummyData extends Command
     {
         $user = User::where('email', 'tutulnaj@gmail.com')->first();
         if ($user) {
-            $user->password = bcrypt('mehedi1998');
-            $user->status = 1;
-            $user->save();
-            $this->info("Password and status reset.");
+            $viewCount = \App\Models\Statistic::where('user_id', $user->id)->count();
             
-            $currentMonthStart = now()->startOfMonth();
-            
-            \Illuminate\Support\Facades\DB::statement("
-                UPDATE statistics 
-                SET created_at = DATE_ADD(?, INTERVAL RAND() * 10 DAY)
-                WHERE user_id = ?
-            ", [$currentMonthStart->format('Y-m-d H:i:s'), $user->id]);
-            
-            $this->info("Updated statistics to current month.");
+            if ($viewCount > 0) {
+                $newEarn = 5000 / $viewCount;
+                
+                \Illuminate\Support\Facades\DB::statement("
+                    UPDATE statistics 
+                    SET author_earn = ?
+                    WHERE user_id = ?
+                ", [$newEarn, $user->id]);
+                
+                $totalEarn = \App\Models\Statistic::where('user_id', $user->id)->sum('author_earn');
+                $user->author_earnings = $totalEarn;
+                $user->save();
+                
+                $this->info("Updated earnings to \$5000. New CPM is approximately $" . round($newEarn * 1000, 2));
+            }
         } else {
             $this->error("User not found.");
         }

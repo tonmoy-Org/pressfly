@@ -222,9 +222,21 @@ class AuthController extends Controller
                 return redirect()->route('login')->withInput();
             }
 
-            $credentials = $request->only('email', 'password');
+            $login = $request->input('login');
+            $password = $request->input('password');
 
-            $credentials['status'] = 1;
+            $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            
+            if (is_numeric($login)) {
+                $fieldType = 'mobile';
+                $login = '880' . ltrim($login, '0');
+            }
+
+            $credentials = [
+                $fieldType => $login,
+                'password' => $password,
+                'status' => 1
+            ];
 
             $remember = false;
             if ($request->remember) {
@@ -271,7 +283,7 @@ class AuthController extends Controller
                 return redirect()->route('register')->withInput();
             }
 
-            $data = $request->only(['name', 'username', 'email', 'password', 'password_confirmation']);
+            $data = $request->only(['name', 'username', 'mobile', 'country_code', 'password', 'password_confirmation']);
 
             $validator = Validator::make(
                 $data,
@@ -295,7 +307,7 @@ class AuthController extends Controller
                             }
                         },
                     ],
-                    'email' => 'required|string|email|max:191|unique:users',
+                    'mobile' => 'required|numeric|unique:users',
                     'password' => 'required|string|min:6|confirmed',
                 ]
             );
@@ -310,7 +322,8 @@ class AuthController extends Controller
 
             $user->name = $data['name'];
             $user->username = $data['username'];
-            $user->email = $data['email'];
+            $mobile = ltrim($data['mobile'], '0');
+            $user->mobile = '880' . $mobile;
             $user->password = Hash::make($data['password']);
 
             $referred_by_id = null;
@@ -336,7 +349,10 @@ class AuthController extends Controller
             $user->register_ip = get_ip();
             $user->author_earnings = price_database_format(get_option('signup_bonus', 0));
 
-            if ((bool)get_option('account_activate_email', true)) {
+            if (get_option('sms_verification_enabled', '0') == '1') {
+                $user->status = 3; // 3 for SMS unverified
+                $user->sms_code = \Str::Random(6);
+            } elseif ((bool)get_option('account_activate_email', true)) {
                 $user->status = 2;
             }
 
@@ -347,6 +363,18 @@ class AuthController extends Controller
                     } catch (\Exception $exception) {
                         \Log::error($exception->getMessage());
                     }
+                }
+
+                if (get_option('sms_verification_enabled', '0') == '1') {
+                    try {
+                        \App\Helpers\SmsGateway::send($user->mobile, "Your PressFly verification code is: {$user->sms_code}");
+                    } catch (\Exception $exception) {
+                        \Log::error($exception->getMessage());
+                    }
+
+                    session()->flash('success', __('Your account has been created. Please verify your mobile number.'));
+                    session()->put('sms_verify_user', $user->id);
+                    return redirect()->route('sms.verify');
                 }
 
                 if ((bool)get_option('account_activate_email', true)) {
@@ -412,6 +440,60 @@ class AuthController extends Controller
             session()->flash('danger', __('Unable to activate your account.'));
             return redirect()->route('login');
         }
+    }
+
+    public function smsVerify(Request $request)
+    {
+        $userId = session('sms_verify_user');
+        if (!$userId) {
+            return redirect()->route('login');
+        }
+
+        if ($request->isMethod('post')) {
+            $request->validate(['sms_code' => 'required|string']);
+            
+            $user = User::find($userId);
+            if ($user && $user->sms_code === $request->sms_code && $user->status == 3) {
+                $user->mobile_verified_at = now();
+                $user->status = 1;
+                $user->sms_code = null;
+                $user->save();
+                
+                session()->forget('sms_verify_user');
+                session()->flash('success', __('Your mobile number has been verified.'));
+                Auth::login($user);
+                return redirect()->route('member.dashboard');
+            }
+            
+            session()->flash('danger', __('Invalid verification code.'));
+            return back();
+        }
+
+        return view('auth.sms_verify');
+    }
+
+    public function smsResend(Request $request)
+    {
+        $userId = session('sms_verify_user');
+        if (!$userId) {
+            return redirect()->route('login');
+        }
+
+        $user = User::find($userId);
+        if ($user && $user->status == 3) {
+            $user->sms_code = \Str::Random(6);
+            $user->save();
+
+            try {
+                \App\Helpers\SmsGateway::send($user->mobile, "Your PressFly verification code is: {$user->sms_code}");
+                session()->flash('success', __('Verification code resent successfully.'));
+            } catch (\Exception $exception) {
+                \Log::error($exception->getMessage());
+                session()->flash('danger', __('Failed to resend code.'));
+            }
+        }
+        
+        return back();
     }
 
     public function resetPassword($username = null, $key = null)

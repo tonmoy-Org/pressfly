@@ -50,6 +50,8 @@
                                             role="tab" data-toggle="tab"><?= __('AdLinkFly') ?></a></li>
                     <li class="nav-item"><a class="nav-link" href="#cron" aria-controls="cron" role="tab"
                                             data-toggle="tab"><?= __('Cron') ?></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sms" aria-controls="sms" role="tab"
+                                            data-toggle="tab"><?= __('SMS') ?></a></li>
                 </ul>
             </div>
             <div class="card-body">
@@ -1272,6 +1274,48 @@
                             'apc.enabled=0;' {{ base_path('artisan') }} schedule:run >> /dev/null 2>&1
                         </code>
 
+                    </div>
+                    
+                    <div role="tabpanel" id="sms" class="tab-pane fade">
+                        <fieldset>
+                            <legend><?= __('SMS Verification Configuration') ?></legend>
+                            <div class="form-group row">
+                                <div class="col-sm-2"><?= __('Enable SMS Verification') ?></div>
+                                <div class="col-sm-10">
+                                    {{ Form::select("Options[{$settings['sms_verification_enabled']['id']}][value]", [1 => __('Yes'), 0 => __('No')],
+                                        old("Options[{$settings['sms_verification_enabled']['id']}][value]", $settings['sms_verification_enabled']['value']),
+                                        ['class' => 'form-control']) }}
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend><?= __('Revesms Configuration') ?></legend>
+                            <div class="form-group row">
+                                <div class="col-sm-2"><?= __('API Key') ?></div>
+                                <div class="col-sm-10">
+                                    {{ Form::text("Options[{$settings['sms_revesms_api_key']['id']}][value]",
+                                        old("Options[{$settings['sms_revesms_api_key']['id']}][value]", $settings['sms_revesms_api_key']['value']),
+                                        ['class' => 'form-control']) }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2"><?= __('Secret Key') ?></div>
+                                <div class="col-sm-10">
+                                    {{ Form::text("Options[{$settings['sms_revesms_secret_key']['id']}][value]",
+                                        old("Options[{$settings['sms_revesms_secret_key']['id']}][value]", $settings['sms_revesms_secret_key']['value']),
+                                        ['class' => 'form-control']) }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2"><?= __('Caller ID') ?></div>
+                                <div class="col-sm-10">
+                                    {{ Form::text("Options[{$settings['sms_revesms_caller_id']['id']}][value]",
+                                        old("Options[{$settings['sms_revesms_caller_id']['id']}][value]", $settings['sms_revesms_caller_id']['value']),
+                                        ['class' => 'form-control']) }}
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
 
                 </div>

@@ -29,12 +29,20 @@
         </div>
 
         <div class="form-group">
-            <input id="email" type="email"
-                   class="form-control form-control-sm{{ $errors->has('email') ? ' is-invalid' : '' }}"
-                   name="email" value="{{ old('email') }}" placeholder="{{ __('E-Mail Address') }}" required>
-
-            @if ($errors->has('email'))
-                <span class="invalid-feedback" role="alert"><strong>{{ $errors->first('email') }}</strong></span>
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <select name="country_code" class="border-0 bg-transparent" style="max-width: 100px;">
+                            <option value="880" selected>Bangladesh (+880)</option>
+                        </select>
+                    </span>
+                </div>
+                <input id="mobile" type="number"
+                       class="form-control{{ $errors->has('mobile') ? ' is-invalid' : '' }}"
+                       name="mobile" value="{{ old('mobile') }}" placeholder="{{ __('Mobile Number') }}" required>
+            </div>
+            @if ($errors->has('mobile'))
+                <span class="invalid-feedback d-block" role="alert"><strong>{{ $errors->first('mobile') }}</strong></span>
             @endif
         </div>
 

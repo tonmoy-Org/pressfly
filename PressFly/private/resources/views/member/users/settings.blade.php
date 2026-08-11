@@ -18,6 +18,15 @@
         </div>
 
         <div class="form-group row">
+            <label class="col-sm-3 col-form-label">{{ __('Mobile Number') }}</label>
+
+            <div class="col-sm-9">
+                <span class="form-control-plaintext">{{ $user->mobile ?: __('Not set') }}</span>
+                <small class="text-muted">{{ __('Mobile number cannot be changed') }}</small>
+            </div>
+        </div>
+
+        <div class="form-group row">
             <label for="name" class="col-sm-3 col-form-label">{{ __('Name') }}</label>
 
             <div class="col-sm-9">

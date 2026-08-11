@@ -35,6 +35,11 @@
                 </div>
 
                 <div class="form-group">
+                    {{ Form::label('mobile', __('Mobile Number')) }}
+                    {{ Form::text('mobile', old('mobile'), ['class' => 'form-control']) }}
+                </div>
+
+                <div class="form-group">
                     {{ Form::label('email', __('Email')) }}
                     {{ Form::email('email', old('email'), ['class' => 'form-control', 'required' => true]) }}
                 </div>

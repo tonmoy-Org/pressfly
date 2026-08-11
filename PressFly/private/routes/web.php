@@ -53,6 +53,9 @@ Route::group([], function () {
 
     Route::get('email-verify/{username}/{key}', [Base\AuthController::class, 'emailVerify'])->name('email.verify');
 
+    Route::match(['get', 'post'], '/sms-verify', [Base\AuthController::class, 'smsVerify'])->name('sms.verify');
+    Route::get('/sms-resend', [Base\AuthController::class, 'smsResend'])->name('sms.resend');
+
     Route::match(['get', 'post'], 'password/reset/{username?}/{key?}', [Base\AuthController::class, 'resetPassword'])
         ->name('password.reset');
 

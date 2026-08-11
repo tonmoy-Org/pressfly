@@ -131,6 +131,7 @@ class UsersController extends AdminController
                 'admin_group_id',
                 'status',
                 'username',
+                'mobile',
                 'email',
                 'password',
             ]
@@ -143,6 +144,7 @@ class UsersController extends AdminController
                 'admin_group_id' => 'required_if:role,admin',
                 'status' => 'required',
                 'username' => 'required|string|alpha_num|min:3|max:50|unique:users',
+                'mobile' => 'nullable|numeric|unique:users',
                 'email' => 'required|string|email|max:191|unique:users',
                 'password' => 'required|string|min:6',
             ]
@@ -217,6 +219,7 @@ class UsersController extends AdminController
                 'status',
                 'disable_earnings',
                 'username',
+                'mobile',
                 'email',
                 'referred_by',
                 'password',
@@ -235,6 +238,7 @@ class UsersController extends AdminController
                 'admin_group_id' => 'required_if:role,admin',
                 'status' => 'required',
                 'username' => 'required|string|alpha_num|min:3|max:50|unique:users,username,' . $user->id,
+                'mobile' => 'nullable|numeric|unique:users,mobile,' . $user->id,
                 'email' => 'required|string|email|max:191|unique:users,email,' . $user->id,
                 'password' => 'nullable|string|min:6',
             ]

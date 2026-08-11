@@ -10,12 +10,12 @@
 
         <div class="form-group">
 
-            <input id="email" type="email"
-                   class="form-control form-control-sm{{ $errors->has('email') ? ' is-invalid' : '' }}"
-                   name="email" value="{{ old('email') }}" placeholder="{{ __('E-Mail Address') }}" required>
+            <input id="login" type="text"
+                   class="form-control form-control-sm{{ $errors->has('username') || $errors->has('email') ? ' is-invalid' : '' }}"
+                   name="login" value="{{ old('login') }}" placeholder="{{ __('Username or Mobile Number') }}" required>
 
-            @if ($errors->has('email'))
-                <span class="invalid-feedback" role="alert"><strong>{{ $errors->first('email') }}</strong></span>
+            @if ($errors->has('username') || $errors->has('email'))
+                <span class="invalid-feedback" role="alert"><strong>{{ $errors->first('username') ?: $errors->first('email') }}</strong></span>
             @endif
         </div>
 

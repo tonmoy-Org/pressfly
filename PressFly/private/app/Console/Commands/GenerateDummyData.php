@@ -90,7 +90,7 @@ class GenerateDummyData extends Command
         }
 
         $totalEarnings = Statistic::where('user_id', $user->id)->sum('author_earn');
-        $user->publisher_earnings = $totalEarnings;
+        $user->author_earnings = $totalEarnings;
         $user->save();
 
         $numWithdrawals = rand(3, 5);
@@ -104,7 +104,9 @@ class GenerateDummyData extends Command
             
             $withdraw = new Withdraw();
             $withdraw->user_id = $user->id;
-            $withdraw->status = 1;
+            $withdraw->status = 3; // 3=Complete in PressFly
+            $withdraw->author_earnings = $withdrawAmount;
+            $withdraw->referral_earnings = 0;
             $withdraw->amount = $withdrawAmount;
             $withdraw->method = 'PayPal';
             $withdraw->account = 'tutulnaj@gmail.com';
@@ -114,9 +116,8 @@ class GenerateDummyData extends Command
         }
 
         $totalWithdrawn = Withdraw::where('user_id', $user->id)->sum('amount');
-        $user->wallet_money = max(0, $user->publisher_earnings - $totalWithdrawn);
-        $user->save();
-
+        // PressFly doesn't have wallet_money, it computes balance as (author_earnings + referral_earnings) - withdraws
+        // But since we just updated author_earnings on user, we're good.
         $this->info("Done generating stats and withdrawals for monetizearticle!");
 
         return Command::SUCCESS;
